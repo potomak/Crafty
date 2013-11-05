@@ -104,43 +104,33 @@ Crafty.c("SpriteAnimation", {
      * Crafty.e("2D, DOM, SpriteAnimation, PlayerSprite").animate('PlayerRunning', [[0, 1], [1, 1], [2, 1], [3, 1]]);
      * ~~~
      */
-    animate: function (reelId, fromX, y, toX) {
-        var reel, i, tile, tileh, pos;
+    animate: function (reelId, offsetX, offsetY, framesNumber, tileW, tileH) {
+        var reel;
 
-        // Get the dimensions of a single frame, as defind in Sprite component.
-        tile = this.__tile + parseInt(this.__padding[0] || 0, 10);
-        tileh = this.__tileh + parseInt(this.__padding[1] || 0, 10);
+        if (typeof tileW === "undefined") {
+            // Get the dimensions of a single frame, as defind in Sprite component.
+            tileW = this.__tile + parseInt(this.__padding[0] || 0, 10);
+            tileH = this.__tileh + parseInt(this.__padding[1] || 0, 10);
+        }
 
         reel = {
             frames: [],
             cyclesPerFrame: undefined, // This gets defined when calling play(...), and indicates the amount of actual frames each individual reel frame is displayed
             currentFrameNumber: 0,
             cycleNumber: 0,
-            repeatsRemaining: 0
+            repeatsRemaining: 0,
+            tile: { w: tileW, h: tileH }
         };
 
         // @sign public this .animate(String reelId, Number fromX, Number y, Number toX)
-        if (typeof fromX === "number") {
-            i = fromX;
-            if (toX > fromX) {
-                for (; i <= toX; i++) {
-                    reel.frames.push([i * tile, y * tileh]);
-                }
-            } else {
-                for (; i >= toX; i--) {
-                    reel.frames.push([i * tile, y * tileh]);
-                }
+        if (typeof offsetX === "number") {
+            for (var i = 0; i < framesNumber; i++) {
+                reel.frames.push([offsetX + (i * tileW), offsetY]);
             }
         }
         // @sign public this .animate(String reelId, Array frames)
         else if (arguments.length === 2) {
-            i = 0;
-            toX = fromX.length - 1;
-
-            for (; i <= toX; i++) {
-                pos = fromX[i];
-                reel.frames.push([pos[0] * tile, pos[1] * tileh]);
-            }
+            throw "Deprecated.";
         } else {
             throw "Urecognized arguments. Please see the documentation for 'animate(...)'.";
         }
@@ -234,6 +224,10 @@ Crafty.c("SpriteAnimation", {
         pos = currentReel.frames[currentReel.currentFrameNumber];
         this.__coord[0] = pos[0];
         this.__coord[1] = pos[1];
+
+        // update size according to tile size
+        this.__tile  = this.__coord[2] = this.w = currentReel.tile.w;
+        this.__tileh = this.__coord[3] = this.h = currentReel.tile.h;
 
         this.bind("EnterFrame", this.updateSprite);
         this._isPlaying = true;
