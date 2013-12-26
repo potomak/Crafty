@@ -60,6 +60,15 @@ module.exports = function (grunt) {
             }
         },
 
+        umd: {
+            all: {
+                src: 'crafty.js',
+                amdModuleId: 'Crafty',
+                objectToExport: 'Crafty',
+                globalAlias: 'Crafty'
+            }
+        },
+
         watch: {
             files: ['src/*.js'],
             tasks: ['build:dev']
@@ -113,16 +122,17 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-jsvalidate');
     grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-banner');
+    grunt.loadNpmTasks('grunt-umd');
 
     grunt.registerTask('version', 'Takes the version into src/version.js', function() {
         fs.writeFileSync('src/version.js', 'module.exports = "' + version + '";');
     });
     
     // Build development
-    grunt.registerTask('build:dev', ['browserify:debug', 'usebanner']);
+    grunt.registerTask('build:dev', ['browserify:debug', 'umd', 'usebanner']);
     
     // Build release
-    grunt.registerTask('build:release', ['browserify:dist', 'usebanner']);
+    grunt.registerTask('build:release', ['browserify:dist', 'umd', 'usebanner']);
 
     // Building the documentation
     grunt.registerTask('api', "Generate api documentation", docGen);

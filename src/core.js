@@ -1620,15 +1620,3 @@ function clone(obj) {
         temp[key] = clone(obj[key]);
     return temp;
 }
-
-// export Crafty
-if (typeof define === 'function') { // AMD
-    define('crafty', [], function () {
-        return Crafty;
-    });
-} else if (typeof exports === 'object') { // CommonJS
-    module.exports = Crafty;
-}
-
-window.Crafty = Crafty;
-
