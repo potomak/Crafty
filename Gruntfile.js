@@ -47,25 +47,24 @@ module.exports = function (grunt) {
         browserify: {
             dist: {
                 files: {
-                    'crafty.js': ['src/*.js']
+                    'src/crafty.js': ['src/*.js']
                 }
             },
             debug: {
                 files: {
-                    'crafty.js': ['src/*.js']
+                    'src/crafty.js': ['src/*.js']
                 },
                 options: {
                     debug: true
                 }
-            }
-        },
-
-        umd: {
-            all: {
-                src: 'crafty.js',
-                amdModuleId: 'Crafty',
-                objectToExport: 'Crafty',
-                globalAlias: 'Crafty'
+            },
+            umd: {
+                files: {
+                    'crafty.js': ['src/crafty.js']
+                },
+                options: {
+                    standalone: 'Crafty'
+                }
             }
         },
 
@@ -122,17 +121,16 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-jsvalidate');
     grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-banner');
-    grunt.loadNpmTasks('grunt-umd');
 
     grunt.registerTask('version', 'Takes the version into src/version.js', function() {
         fs.writeFileSync('src/version.js', 'module.exports = "' + version + '";');
     });
     
     // Build development
-    grunt.registerTask('build:dev', ['browserify:debug', 'umd', 'usebanner']);
+    grunt.registerTask('build:dev', ['browserify:debug', 'browserify:umd', 'usebanner']);
     
     // Build release
-    grunt.registerTask('build:release', ['browserify:dist', 'umd', 'usebanner']);
+    grunt.registerTask('build:release', ['browserify:dist', 'browserify:umd', 'usebanner']);
 
     // Building the documentation
     grunt.registerTask('api', "Generate api documentation", docGen);
