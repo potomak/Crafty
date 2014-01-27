@@ -359,8 +359,8 @@ Crafty.extend({
          */
         inner: function (obj) {
             var rect = obj.getBoundingClientRect(),
-                x = rect.left + (window.pageXOffset ? window.pageXOffset : document.body.scrollLeft),
-                y = rect.top + (window.pageYOffset ? window.pageYOffset : document.body.scrollTop),
+                x = rect.left + (window.pageXOffset ? window.pageXOffset : (document.documentElement || document.body).scrollLeft),
+                y = rect.top + (window.pageYOffset ? window.pageYOffset : (document.documentElement || document.body).scrollTop),
 
                 //border left
                 borderX = parseInt(this.getStyle(obj, 'border-left-width') || 0, 10) || parseInt(this.getStyle(obj, 'borderLeftWidth') || 0, 10) || 0,
@@ -427,8 +427,8 @@ Crafty.extend({
          */
         translate: function (x, y) {
             return {
-                x: (x - Crafty.stage.x + document.body.scrollLeft + document.documentElement.scrollLeft - Crafty.viewport._x) / Crafty.viewport._scale,
-                y: (y - Crafty.stage.y + document.body.scrollTop + document.documentElement.scrollTop - Crafty.viewport._y) / Crafty.viewport._scale
+                x: (x - Crafty.stage.x + (document.documentElement || document.body).scrollLeft - Crafty.viewport._x) / Crafty.viewport._scale,
+                y: (y - Crafty.stage.y + (document.documentElement || document.body).scrollTop - Crafty.viewport._y) / Crafty.viewport._scale
             };
         }
     }
